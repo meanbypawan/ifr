@@ -1,0 +1,25 @@
+.header{
+    min-height: 80px;
+    background-color: white;
+    box-sizing: border-box;
+    padding:10px;
+}
+.logo-container div{
+    background-image: url('../../../../public/logo.png');
+    background-repeat: no-repeat;
+    height: 80px;
+    width: 100%;
+    border-right: 1px solid #EA3F3F;
+}
+.heading{
+    min-height: 80px;
+    row-gap: 5px;
+}
+.heading button{
+    width: 300px;
+    background-color: #E1DFDF; 
+    color:black;
+    border:none;
+    border-radius: 10px;
+    padding:5px;
+}

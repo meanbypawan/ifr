@@ -1,0 +1,31 @@
+.color-background{
+    background-color: rgb(234,63,63);
+}
+.size{
+    height: 80vh;
+}
+.center{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.logo-size{
+    width: 200px;
+    height: 150px;
+}
+input[type="text"],input[type="password"]{
+    border: none;
+    border-bottom: 1px solid rgb(234,63,63);
+}
+.banner-image{
+    background-image: url('../../../public/banner.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.remove-padding{
+    padding:0px !important;
+}
+.bg-color-with-opacity{
+    background-color: rgba(234,63,63,0.5);
+}

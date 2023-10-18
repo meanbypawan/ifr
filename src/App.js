@@ -1,25 +1,18 @@
-import logo from './logo.svg';
 import './App.css';
-
+import { Route, Routes } from 'react-router-dom';
+import Home from './components/home/home';
+import 'react-toastify/dist/ReactToastify.css';
+import ExamDashboard from './components/exam/ExamDashboard';
+import QuestionDashBoard from './components/exam/question-dashboard/QuestionDashboard';
+import Auth from './Auth';
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  return <div>
+     <Routes>
+       <Route path='/' element={<Home/>}/>
+       <Route path='/exam-dashboard' element={<Auth><ExamDashboard/></Auth>}/>
+       <Route path='/question-dashboard' element={<Auth><QuestionDashBoard/></Auth>}/>
+     </Routes>
+  </div>
 }
 
 export default App;

@@ -1,0 +1,24 @@
+.bg-container{
+    background-color: #EA3F3F;
+    width: 100%;
+    min-height: 700px;
+}
+
+.info-block{
+    width: 50%;
+    height: 90%;
+    background-color: white;
+    box-shadow: 10px 10px 10px grey;
+}
+.exam-instruction-block{
+    width: 70%;
+    margin: auto;
+    height: 90%;
+}
+.instruction-list{
+    padding:16px;
+}
+.block-footer{
+    height: 10%;
+    width: 100%;
+}

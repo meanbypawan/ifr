@@ -1,0 +1,28 @@
+.tabs{
+    background-color: rgb(225, 223, 223);
+    padding: 5px 5px;
+}
+.tabs button{
+    width: 140px;
+    padding:10px;
+    border:1px solid rgb(225, 223, 223);
+    border-radius: 5px;
+    color:#EA3F3F; 
+    background-color: white;
+}
+.active{
+    /* border-bottom: 2px solid #EA3F3F !important; */
+    background-color: #EA3F3F !important;
+    color:white !important;
+    border: 2px solid white !important;
+}
+.question-section{
+  width: 100%;
+  border: 1px solid #EA3F3F;
+  height: 60vh;
+  overflow: auto;
+}
+
+
+
+
