@@ -15,6 +15,8 @@ export default function QuestionDashBoard(){
   
   const [questionPaper,setQuestionPaper] = useState(JSON.parse(localStorage.getItem("question-list")));
 
+  const [targetQuestionNo,setTargetQuestionNo] = useState(null);
+
   const changeTab = (scrollContainerId,subject)=>{
     setActiveQuestionList(subject);
     let scrollContainer = document.querySelector("#"+scrollContainerId);    
@@ -27,7 +29,8 @@ export default function QuestionDashBoard(){
       width:"20px",
       height:"20px",
       borderRadius:"50%",
-      fontSize:"10px"
+      fontSize:"10px",
+      cursor: "pointer"
     },
     notSelected:{
       backgroundColor: "#E1DFDF",
@@ -35,11 +38,20 @@ export default function QuestionDashBoard(){
       width:"20px",
       height:"20px",
       borderRadius:"50%",
-      fontSize:"10px"
+      fontSize:"10px",
+      cursor: "pointer"
+    },
+    markedForReview:{
+      backgroundColor: "orange",
+      color: "black",
+      width:"20px",
+      height:"20px",
+      borderRadius:"50%",
+      fontSize:"10px",
+      cursor: "pointer"
     }
   };
   const [time, setTime] = useState(90*60);
- 
   useEffect(()=>{
     loadQuestionsPaper();
   },[]);
@@ -47,15 +59,15 @@ export default function QuestionDashBoard(){
    try{ 
     const response = await axios.post("http://localhost:3001/paper/generate",{userId});
     setQuestionList([...response.data.questionsList]);
-    console.log("Inside load question paper...........");
-    console.log(questionList);
     saveQuestion(response.data.questionsList);
-    setTime(localStorage.getItem("timer")*1);
+    let timer = localStorage.getItem("timer");
+    if(timer)
+     setTime(timer*1);
    }
    catch(err){
     toast.error("Oops! something went wrong..");
    } 
-  }
+  } 
 
   const saveQuestion = (questionList)=>{
     //questionList = JSON.parse(questionList);
@@ -70,6 +82,7 @@ export default function QuestionDashBoard(){
         setQuestionPaper(updateQuestionList);
     }
   } 
+    
   useEffect(() => {
     const timer = setInterval(() => {
       if (time > 0) {
@@ -77,13 +90,18 @@ export default function QuestionDashBoard(){
         localStorage.setItem("timer",""+(time-1));
       } else {
         clearInterval(timer);
-        // Handle timer completion here
       }
-    }, 1000);
+    }, 1000); 
     return () => {
-      clearInterval(timer); // Cleanup the timer when the component unmounts
+      clearInterval(timer); 
     };
   }, [time]);
+  const navigateToQuestion = (subject,index)=>{
+    //window.alert(subject+"  "+index);
+    setActiveQuestionList(subject);
+    setTargetQuestionNo(index);
+    //setTargetQuestion({subject,index});
+  }
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;
     return <>
@@ -92,7 +110,7 @@ export default function QuestionDashBoard(){
             <div className="col-md-9">
               <Header/>
               <div className="container-fluid bg-white mt-2 pt-1 pb-1">
-              {questionList.length!=0 && questionPaper!=null?<QuestionTab changeTab={changeTab} userId={userId} questionList={questionList} setQuestionList={setQuestionList} activeQuestionList={activeQuestionList} setActiveQuestionList={setActiveQuestionList} subjectList={subjectList} setSubjectList={setSubjectList} questionPaper={questionPaper} setQuestionPaper={setQuestionPaper}/> : <p>Data loading....</p>}  
+              {questionList.length!=0 && questionPaper!=null?<QuestionTab  changeTab={changeTab} userId={userId} questionList={questionList} setQuestionList={setQuestionList} activeQuestionList={activeQuestionList} setActiveQuestionList={setActiveQuestionList} subjectList={subjectList} setSubjectList={setSubjectList} questionPaper={questionPaper} setQuestionPaper={setQuestionPaper} setTargetQuestionNo={setTargetQuestionNo} targetQuestionNo={targetQuestionNo}/> : <p>Data loading....</p>}  
               
               </div>
             </div>  
@@ -105,7 +123,7 @@ export default function QuestionDashBoard(){
                 {subjectList.map((subject,index)=><div key={index}>
                   <div>{subject}</div>
                   <div className="row pl-3">
-                   {questionList[0]?.[subject].map((question,index)=><span key={index} className="d-flex ml-2 mt-1 justify-content-center align-items-center" style={(questionPaper?.[subject].find((obj)=>{return obj.Id == question.Id}).AnswerKey!='null')? styles.selected:styles.notSelected}>{index+1}</span>
+                   {questionList[0]?.[subject].map((question,index)=><span key={index} onClick={()=>navigateToQuestion(subject,index)} className="d-flex ml-2 mt-1 justify-content-center align-items-center" style={(questionPaper?.[subject].find((obj)=>{return obj.Id == question.Id}).AnswerKey!='null')? styles.selected : (questionPaper?.[subject].find((obj)=>{return obj.Id == question.Id}).MarkedForReview != 'null') ? styles.markedForReview : styles.notSelected}>{index+1}</span>
                   )}
                   </div>
                   <hr/>
