@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import './home.css';
 import axios from 'axios';
-import Api from '../../api/Api';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';

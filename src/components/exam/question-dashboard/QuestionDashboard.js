@@ -5,7 +5,10 @@ import "./QuestionDashboard.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 export default function QuestionDashBoard(){
+  const navigate = useNavigate();
+
   const {userId} = useSelector((store)=>store.user);
   const [questionList,setQuestionList] = useState([]);
   
@@ -16,7 +19,6 @@ export default function QuestionDashBoard(){
   const [questionPaper,setQuestionPaper] = useState(JSON.parse(localStorage.getItem("question-list")));
 
   const [targetQuestionNo,setTargetQuestionNo] = useState(null);
-
   const changeTab = (scrollContainerId,subject)=>{
     setActiveQuestionList(subject);
     let scrollContainer = document.querySelector("#"+scrollContainerId);    
@@ -58,6 +60,7 @@ export default function QuestionDashBoard(){
   const loadQuestionsPaper = async ()=>{
    try{ 
     const response = await axios.post("http://localhost:3001/paper/generate",{userId});
+    console.log(response.data.questionsList);
     setQuestionList([...response.data.questionsList]);
     saveQuestion(response.data.questionsList);
     let timer = localStorage.getItem("timer");
@@ -70,18 +73,20 @@ export default function QuestionDashBoard(){
   } 
 
   const saveQuestion = (questionList)=>{
-    //questionList = JSON.parse(questionList);
-    if(!localStorage.getItem("question-list")){
-       let updateQuestionList = {"English":[],"Hindi":[],"General Knowledge":[],"Computer Basic":[],"Quantitative Aptitude":[],"Logical Resoning":[]};
+    let previousUserId = localStorage.getItem("userId");
+    if(!previousUserId || previousUserId != userId){
+      let updateQuestionList = {"English":[],"Hindi":[],"General Knowledge":[],"Computer Basic":[],"Quantitative Aptitude":[],"Logical Resoning":[]};
        for(let key in questionList[0])
           for(let question of questionList[0][key]){
             delete question.Answer;
             updateQuestionList[key].push(question);
-          }
-        localStorage.setItem("question-list",JSON.stringify(updateQuestionList));
-        setQuestionPaper(updateQuestionList);
+        }
+       localStorage.setItem("question-list",JSON.stringify(updateQuestionList));
+       localStorage.setItem("userId",userId+"");
+       setQuestionPaper(updateQuestionList);
     }
-  } 
+  
+  }  
     
   useEffect(() => {
     const timer = setInterval(() => {
@@ -104,13 +109,26 @@ export default function QuestionDashBoard(){
   }
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;
+  const submitTest = async ()=>{
+    try{
+     let questionList = localStorage.getItem("question-list");      
+     questionList = questionList && JSON.parse(questionList);
+     let response = await axios.post("http://localhost:3001/paper/submit",{questionList,userId});
+     localStorage.clear();
+     navigate("/result",{state:{param:{score : response.data.score}}});
+    }
+    catch(err){
+      console.log(err);
+      toast.error("Oops ! Something went wrong..");
+    }  
+  }
     return <>
       <div className="pt-2 container-fluid question-dashboard">
         <div className="row">
             <div className="col-md-9">
               <Header/>
               <div className="container-fluid bg-white mt-2 pt-1 pb-1">
-              {questionList.length!=0 && questionPaper!=null?<QuestionTab  changeTab={changeTab} userId={userId} questionList={questionList} setQuestionList={setQuestionList} activeQuestionList={activeQuestionList} setActiveQuestionList={setActiveQuestionList} subjectList={subjectList} setSubjectList={setSubjectList} questionPaper={questionPaper} setQuestionPaper={setQuestionPaper} setTargetQuestionNo={setTargetQuestionNo} targetQuestionNo={targetQuestionNo}/> : <p>Data loading....</p>}  
+              {questionList.length!=0 && questionPaper!=null?<QuestionTab  changeTab={changeTab} userId={userId} questionList={questionList} setQuestionList={setQuestionList} activeQuestionList={activeQuestionList} setActiveQuestionList={setActiveQuestionList} subjectList={subjectList} setSubjectList={setSubjectList} questionPaper={questionPaper} setQuestionPaper={setQuestionPaper} setTargetQuestionNo={setTargetQuestionNo} targetQuestionNo={targetQuestionNo} submitTest={submitTest}/> : <p>Data loading....</p>}  
               
               </div>
             </div>  
@@ -123,7 +141,7 @@ export default function QuestionDashBoard(){
                 {subjectList.map((subject,index)=><div key={index}>
                   <div>{subject}</div>
                   <div className="row pl-3">
-                   {questionList[0]?.[subject].map((question,index)=><span key={index} onClick={()=>navigateToQuestion(subject,index)} className="d-flex ml-2 mt-1 justify-content-center align-items-center" style={(questionPaper?.[subject].find((obj)=>{return obj.Id == question.Id}).AnswerKey!='null')? styles.selected : (questionPaper?.[subject].find((obj)=>{return obj.Id == question.Id}).MarkedForReview != 'null') ? styles.markedForReview : styles.notSelected}>{index+1}</span>
+                   {questionList[0]?.[subject].map((question,index)=><span key={index} onClick={()=>navigateToQuestion(subject,index)} className="d-flex ml-2 mt-1 justify-content-center align-items-center" style={(questionPaper?.[subject].find((obj)=>{return obj.Id == question.Id})?.AnswerKey!='null')? styles.selected : (questionPaper?.[subject].find((obj)=>{return obj.Id == question.Id}).MarkedForReview != 'null') ? styles.markedForReview : styles.notSelected}>{index+1}</span>
                   )}
                   </div>
                   <hr/>

@@ -1,10 +1,7 @@
-import React, { createRef, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './QuestionTab.css';
-import axios from 'axios';
-import { ToastContainer, toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
-function QuestionTab({changeTab,questionPaper,setQuestionPaper,userId,questionList,setQuestionList,activeQuestionList,setActiveQuestionList,subjectList,setSubjectList,targetQuestionNo,setTargetQuestionNo}){
-    const navigate = useNavigate();
+import { ToastContainer} from 'react-toastify';
+function QuestionTab({submitTest,changeTab,questionPaper,setQuestionPaper,activeQuestionList,subjectList,targetQuestionNo}){
     const [answerd,setAnswered] = useState(localStorage.getItem("totalCheckedAnswer"));
     const [notAnswered,setNotAnswered] = useState(localStorage.getItem("totalUnCheckedAnswer"));
     const [markedForReview,setMarkedForReview] = useState(localStorage.getItem("totalMarkedForReview"));
@@ -12,7 +9,6 @@ function QuestionTab({changeTab,questionPaper,setQuestionPaper,userId,questionLi
       let questionList = JSON.parse(localStorage.getItem("question-list"));
       let updatedQuestionList = {...questionList};
       let targetedQuestion = updatedQuestionList[activeQuestionList].findIndex((question)=>question.Id==id);
-      //console.log(targetedQuestion);
       if(answerKey == "reset"){
         updatedQuestionList[activeQuestionList][targetedQuestion].AnswerKey = "null";
         updatedQuestionList[activeQuestionList][targetedQuestion].MarkedForReview = "null";
@@ -48,23 +44,12 @@ function QuestionTab({changeTab,questionPaper,setQuestionPaper,userId,questionLi
       localStorage.setItem("totalUnCheckedAnswer",ansNotChecked);
       localStorage.setItem("totalMarkedForReview",reviewChecked);
     }
-    const submitTest = async ()=>{
-      try{
-       let questionList = localStorage.getItem("question-list");      
-       questionList = questionList && JSON.parse(questionList);
-       let response = await axios.post("http://localhost:3001/paper/submit",{questionList,userId});
-       navigate("/result",{state:{param:{score : response.data.score}}});
-       localStorage.clear();
-      }
-      catch(err){
-        toast.error("Oops ! Something went wrong..");
-      }  
-    }
+    
     useEffect(()=>{
       for(let i=0; i<=targetQuestionNo;i++)
         handleScroll(targetQuestionNo-1);
     },[targetQuestionNo]);
-    
+
     const handleScroll = (index)=>{
       if(index == questionPaper[activeQuestionList].length-1){
         let subIndex = subjectList.findIndex((subject)=>{return subject == activeQuestionList});
@@ -94,12 +79,12 @@ function QuestionTab({changeTab,questionPaper,setQuestionPaper,userId,questionLi
           <div id="question-section" className="col-12 question-section p-3">
             {questionPaper[activeQuestionList]?.map((question,index)=><div id={"div"+index} className="questions" key={index}>
               <p style={{fontWeight:"bold"}}>Q.{index+1} {question.Question}</p>
-              <p><input checked={questionPaper[activeQuestionList].find((obj)=>obj.Id==question.Id).AnswerKey=="A"} onChange={()=>saveAnswer(question.Id,"A")} id={activeQuestionList+question.A}  name={activeQuestionList+question._id} type='radio' className="mr-2"/><label htmlFor={activeQuestionList+"A"}>{question.A}</label></p>
-              <p><input checked={questionPaper[activeQuestionList].find((obj)=>obj.Id==question.Id).AnswerKey=="B"} onChange={()=>saveAnswer(question.Id,"B")} id={activeQuestionList+question.B}  name={activeQuestionList+question._id} type='radio' className="mr-2"/><label htmlFor={activeQuestionList+"B"}>{question.B}</label></p>
-              <p><input checked={questionPaper[activeQuestionList].find((obj)=>obj.Id==question.Id).AnswerKey=="C"} onChange={()=>saveAnswer(question.Id,"C")} id={activeQuestionList+question.C}  name={activeQuestionList+question._id} type='radio' className="mr-2"/><label htmlFor={activeQuestionList+"C"}>{question.C}</label></p>
+              <p><input checked={questionPaper[activeQuestionList].find((obj)=>obj.Id==question.Id).AnswerKey=="A"} onChange={()=>saveAnswer(question.Id,"A")} id={activeQuestionList+question.A}  name={activeQuestionList+question._id} type='radio' className="mr-2"/><label htmlFor={activeQuestionList+question.A}>{question.A}</label></p>
+              <p><input checked={questionPaper[activeQuestionList].find((obj)=>obj.Id==question.Id).AnswerKey=="B"} onChange={()=>saveAnswer(question.Id,"B")} id={activeQuestionList+question.B}  name={activeQuestionList+question._id} type='radio' className="mr-2"/><label htmlFor={activeQuestionList+question.B}>{question.B}</label></p>
+              <p><input checked={questionPaper[activeQuestionList].find((obj)=>obj.Id==question.Id).AnswerKey=="C"} onChange={()=>saveAnswer(question.Id,"C")} id={activeQuestionList+question.C}  name={activeQuestionList+question._id} type='radio' className="mr-2"/><label htmlFor={activeQuestionList+question.C}>{question.C}</label></p>
               <p className='d-flex justify-content-between'>
                 <label>
-                <input checked={questionPaper[activeQuestionList].find((obj)=>obj.Id==question.Id).AnswerKey=="D"} onChange={()=>saveAnswer(question.Id,"D")} id={activeQuestionList+question.D}  name={activeQuestionList+question._id} type='radio' className="mr-2"/><label htmlFor={activeQuestionList+"D"}>{question.D}</label>
+                <input checked={questionPaper[activeQuestionList].find((obj)=>obj.Id==question.Id).AnswerKey=="D"} onChange={()=>saveAnswer(question.Id,"D")} id={activeQuestionList+question.D}  name={activeQuestionList+question._id} type='radio' className="mr-2"/><label htmlFor={activeQuestionList+question.D}>{question.D}</label>
                 </label>
                 <label>
                   <button disabled={questionPaper[activeQuestionList].find((obj)=>obj.Id==question.Id).AnswerKey == "null" && questionPaper[activeQuestionList].find((obj)=>obj.Id==question.Id).MarkedForReview == "null" ? true : false} onClick={()=>saveAnswer(question.Id,"reset")} className="btn btn-outline-secondary mr-2">Reset</button>
@@ -120,7 +105,7 @@ function QuestionTab({changeTab,questionPaper,setQuestionPaper,userId,questionLi
               <span className="mr-2" style={{width:"15px", height:"15px", borderRadius:"50%",display:"inline-block",backgroundColor:"#EA3F3F"}}></span> Answerd({answerd})
             </div>
             <div>
-            <span className="mr-2" style={{width:"15px", height:"15px",display:"inline-block", borderRadius:"50%",backgroundColor:"#E1DFDF"}}></span> Not answered({notAnswered})
+            <span className="mr-2" style={{width:"15px", height:"15px",display:"inline-block", borderRadius:"50%",backgroundColor:"#E1DFDF"}}></span> Not visited({notAnswered})
             </div>
             <div><span className="mr-2" style={{width:"15px", height:"15px",display:"inline-block", borderRadius:"50%",backgroundColor:"#E77C34"}}></span>Marked for review({markedForReview})</div>
           </div>
@@ -135,5 +120,4 @@ function QuestionTab({changeTab,questionPaper,setQuestionPaper,userId,questionLi
       </div>
     </>
 }
-
 export default QuestionTab;

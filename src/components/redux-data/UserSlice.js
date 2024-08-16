@@ -14,8 +14,15 @@ const slice = createSlice({
             state.name = action.payload.name;
             state.isLoggedIn = true;
             state.userId = action.payload.userId
+        },
+        signOut : (state,action)=>{
+            state.isLoggedIn = false;
+            state.name = null;
+            state.secretKey = null;
+            state.userId = null
         }
+
     }
 });
-export const {saveUser} = slice.actions;
+export const {saveUser, signOut} = slice.actions;
 export default slice.reducer;

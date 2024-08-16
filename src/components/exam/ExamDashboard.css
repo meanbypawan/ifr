@@ -5,7 +5,7 @@
 }
 
 .info-block{
-    width: 50%;
+    width: 80%;
     height: 90%;
     background-color: white;
     box-shadow: 10px 10px 10px grey;
@@ -17,6 +17,7 @@
 }
 .instruction-list{
     padding:16px;
+    font-size: 12px;
 }
 .block-footer{
     height: 10%;
