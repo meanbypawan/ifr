@@ -6,7 +6,6 @@ export default function ExamDashboard() {
     const { name } = useSelector((store) => store.user);
     const [flag, setFlag] = useState(true);
     const navigate = useNavigate();
-
     return <>
         <div className="container-fluid bg-container d-flex justify-content-center align-items-center">
             <div className="info-block">

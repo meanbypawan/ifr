@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import Api from "../../../api/Api";
 export default function QuestionDashBoard(){
   const navigate = useNavigate();
 
@@ -59,7 +60,7 @@ export default function QuestionDashBoard(){
   },[]);
   const loadQuestionsPaper = async ()=>{
    try{ 
-    const response = await axios.post("http://localhost:3001/paper/generate",{userId});
+    const response = await axios.post(Api.GENERATE_PAPER,{userId});
     console.log(response.data.questionsList);
     setQuestionList([...response.data.questionsList]);
     saveQuestion(response.data.questionsList);
@@ -113,7 +114,7 @@ export default function QuestionDashBoard(){
     try{
      let questionList = localStorage.getItem("question-list");      
      questionList = questionList && JSON.parse(questionList);
-     let response = await axios.post("http://localhost:3001/paper/submit",{questionList,userId});
+     let response = await axios.post(Api.SUBMIT_EXAM,{questionList,userId});
      localStorage.clear();
      navigate("/result",{state:{param:{score : response.data.score}}});
     }

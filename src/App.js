@@ -7,6 +7,12 @@ import QuestionDashBoard from './components/exam/question-dashboard/QuestionDash
 import Auth from './Auth';
 import Result from './components/exam/result/Result';
 import { useEffect, useState } from 'react';
+import AdminLogin from './components/admin/AdminLogin';
+import Dashboard from './components/admin/admin-dashboard/Dashboard';
+import CreateExam from './components/admin/admin-dashboard/CreateExam';
+import UploadStudent from './components/admin/admin-dashboard/UploadStudent';
+import Features from './components/admin/admin-dashboard/Features';
+import ManageExam from './components/admin/admin-dashboard/ManageExam';
 function App() {
   const [visible, setVisible] = useState(true);
   const navigate = useNavigate();
@@ -29,6 +35,13 @@ function App() {
        <Route path='/exam-dashboard' element={<Auth><ExamDashboard/></Auth>}/>
        <Route path='/question-dashboard' element={<Auth><QuestionDashBoard/></Auth>}/>
        <Route path='/result' element={<Result/>}/>
+       <Route path='/system-administration/login' element={<AdminLogin/>}/>
+       <Route path='/system-administration/dashboard' element={<Dashboard/>}>
+         <Route path='create-exam' element={<CreateExam/>}/>
+         <Route path='upload-student' element={<UploadStudent/>}/>
+         <Route index element={<Features/>}/>
+         <Route path='manage-exam' element={<ManageExam/>}/>
+       </Route>
     </Routes>
    </div>
 }

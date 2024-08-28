@@ -5,6 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { saveUser } from '../redux-data/UserSlice';
+import Api from '../../api/Api';
 export default function Home() {
     const [mobile,setMobile] = useState(null);
     const [password,setPassword] = useState(null);
@@ -13,7 +14,7 @@ export default function Home() {
     const signIn = async (event)=>{
       try{  
        event.preventDefault(); 
-       const response = await axios.post("http://localhost:3001/user/signin",{mobile,password});
+       const response = await axios.post(Api.USER_SIGN_IN,{mobile,password});
        dispatch(saveUser({secretKey:response.data.token, name:response.data.user.name,userId:response.data.user._id}));
        navigate("/exam-dashboard");
       }
