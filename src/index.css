@@ -14,3 +14,16 @@ code {
 .cursor-pointer{
   cursor: pointer;
 }
+.spinner-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1050; /* Ensure it's above other content */
+  background-color: rgba(255, 255, 255, 0.8); /* Optional: Add a background to cover other content */
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

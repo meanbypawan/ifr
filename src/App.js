@@ -13,6 +13,7 @@ import CreateExam from './components/admin/admin-dashboard/CreateExam';
 import UploadStudent from './components/admin/admin-dashboard/UploadStudent';
 import Features from './components/admin/admin-dashboard/Features';
 import ManageExam from './components/admin/admin-dashboard/ManageExam';
+import DataSheet from './components/admin/admin-dashboard/DataSheet';
 function App() {
   const [visible, setVisible] = useState(true);
   const navigate = useNavigate();
@@ -41,6 +42,7 @@ function App() {
          <Route path='upload-student' element={<UploadStudent/>}/>
          <Route index element={<Features/>}/>
          <Route path='manage-exam' element={<ManageExam/>}/>
+         <Route path='data-sheet/:code' element={<DataSheet/>}/>
        </Route>
     </Routes>
    </div>

@@ -15,7 +15,7 @@ export default function Home() {
       try{  
        event.preventDefault(); 
        const response = await axios.post(Api.USER_SIGN_IN,{mobile,password});
-       dispatch(saveUser({secretKey:response.data.token, name:response.data.user.name,userId:response.data.user._id}));
+       dispatch(saveUser({secretKey:response.data.token, name:response.data.user.Name,userId:response.data.user._id}));
        navigate("/exam-dashboard");
       }
       catch(err){

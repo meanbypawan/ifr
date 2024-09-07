@@ -8,5 +8,8 @@ export default {
     UPLOAD_USER: "http://localhost:3001/user/upload-user",
     UPLOAD_QUESTION: "http://localhost:3001/question/upload-question",
     EXAM_LIST: "http://localhost:3001/exam/list",
-    REMOVE_EXAM: "http://localhost:3001/exam/remove"
+    REMOVE_EXAM: "http://localhost:3001/exam/remove",
+    GENERATE_PASSWORD: "http://localhost:3001/exam/generate-password", 
+    CHANGE_EXAM_STATUS: "http://localhost:3001/exam/change-status",
+    LOAD_DATA_SHEET: "http://localhost:3001/user/data-sheet"
 }
