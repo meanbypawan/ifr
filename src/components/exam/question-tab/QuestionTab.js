@@ -89,7 +89,7 @@ function QuestionTab({submitTest,changeTab,questionPaper,setQuestionPaper,active
                 <label>
                   <button disabled={questionPaper[activeQuestionList].find((obj)=>obj.Id==question.Id).AnswerKey == "null" && questionPaper[activeQuestionList].find((obj)=>obj.Id==question.Id).MarkedForReview == "null" ? true : false} onClick={()=>saveAnswer(question.Id,"reset")} className="btn btn-outline-secondary mr-2">Reset</button>
                   <button disabled={questionPaper[activeQuestionList].find((obj)=>obj.Id==question.Id).MarkedForReview == true || questionPaper[activeQuestionList].find((obj)=>obj.Id==question.Id).AnswerKey != "null"} className='btn btn-outline-warning mr-2' onClick={()=>saveAnswer(question.Id,"marked for review")}>Mark for review</button>
-                  <button onClick={()=>handleScroll(index)} className="btn btn-danger">Next</button>
+                  <button onClick={()=>handleScroll(index)} className="active btn">Next</button>
                 </label>
               </p>
               <hr/> 
@@ -102,7 +102,7 @@ function QuestionTab({submitTest,changeTab,questionPaper,setQuestionPaper,active
         <div className="row">
           <div className="col-12 question-tracking-section d-flex justify-content-around align-items-center">
             <div>
-              <span className="mr-2" style={{width:"15px", height:"15px", borderRadius:"50%",display:"inline-block",backgroundColor:"#EA3F3F"}}></span> Answerd({answerd})
+              <span className="mr-2" style={{width:"15px", height:"15px", borderRadius:"50%",display:"inline-block",backgroundColor:"#6A0DAD"}}></span> Answerd({answerd})
             </div>
             <div>
             <span className="mr-2" style={{width:"15px", height:"15px",display:"inline-block", borderRadius:"50%",backgroundColor:"#E1DFDF"}}></span> Not visited({notAnswered})

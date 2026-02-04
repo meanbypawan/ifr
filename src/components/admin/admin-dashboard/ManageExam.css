@@ -1,0 +1,57 @@
+.manage-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 25px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.manage-title {
+  text-align: center;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #7b2ff7;
+}
+
+/* Table */
+.manage-table th {
+  background: linear-gradient(90deg, #7b2ff7, #f107a3);
+  color: #fff;
+  border: none;
+}
+
+.manage-table td {
+  vertical-align: middle;
+}
+
+/* Status badge */
+.status-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.status-badge.open {
+  background: #e6f9f0;
+  color: #1c9c6b;
+}
+
+.status-badge.close {
+  background: #fdeaea;
+  color: #d93025;
+}
+
+/* Buttons */
+.action-buttons button {
+  margin-right: 8px;
+}
+
+.btn-theme {
+  background: linear-gradient(90deg, #7b2ff7, #f107a3);
+  color: #fff;
+  border: none;
+}
+
+.btn-theme:hover {
+  opacity: 0.9;
+}

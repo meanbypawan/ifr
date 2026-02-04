@@ -27,7 +27,7 @@ export default function QuestionDashBoard(){
   }
   const styles = {
     selected:{
-      backgroundColor: "#EA3F3F",
+      backgroundColor: "#6A0DAD",
       color:"white",
       width:"20px",
       height:"20px",
@@ -123,33 +123,87 @@ export default function QuestionDashBoard(){
       toast.error("Oops ! Something went wrong..");
     }  
   }
-    return <>
-      <div className="pt-2 container-fluid question-dashboard">
-        <div className="row">
-            <div className="col-md-9">
-              <Header/>
-              <div className="container-fluid bg-white mt-2 pt-1 pb-1">
-              {questionList.length!=0 && questionPaper!=null?<QuestionTab  changeTab={changeTab} userId={userId} questionList={questionList} setQuestionList={setQuestionList} activeQuestionList={activeQuestionList} setActiveQuestionList={setActiveQuestionList} subjectList={subjectList} setSubjectList={setSubjectList} questionPaper={questionPaper} setQuestionPaper={setQuestionPaper} setTargetQuestionNo={setTargetQuestionNo} targetQuestionNo={targetQuestionNo} submitTest={submitTest}/> : <p>Data loading....</p>}  
-              
-              </div>
-            </div>  
-            <div className="col-md-3" style={{backgroundColor:"white"}}>
-                <div className="d-flex pt-4 align-items-center justify-content-center bg-white" style={{height:"30px"}}>
-                  <h5>Time Left - <span className="text-danger">{minutes < 10 ? '0' : ''}{minutes}:{seconds < 10 ? '0' : ''}{seconds}</span></h5>
-                </div>
-                <hr/>
-                <h5 className="text-center">Question status</h5>
-                {subjectList.map((subject,index)=><div key={index}>
-                  <div>{subject}</div>
-                  <div className="row pl-3">
-                   {questionList[0]?.[subject].map((question,index)=><span key={index} onClick={()=>navigateToQuestion(subject,index)} className="d-flex ml-2 mt-1 justify-content-center align-items-center" style={(questionPaper?.[subject].find((obj)=>{return obj.Id == question.Id})?.AnswerKey!='null')? styles.selected : (questionPaper?.[subject].find((obj)=>{return obj.Id == question.Id}).MarkedForReview != 'null') ? styles.markedForReview : styles.notSelected}>{index+1}</span>
-                  )}
-                  </div>
-                  <hr/>
-                </div>)}
+  return (
+  <div className="question-dashboard-wrapper">
 
-            </div>
+    <div className="question-dashboard-card">
+
+      {/* LEFT : Question Area */}
+      <div className="question-left">
+        <Header />
+
+        <div className="question-content">
+          {questionList.length !== 0 && questionPaper != null ? (
+            <QuestionTab
+              changeTab={changeTab}
+              userId={userId}
+              questionList={questionList}
+              setQuestionList={setQuestionList}
+              activeQuestionList={activeQuestionList}
+              setActiveQuestionList={setActiveQuestionList}
+              subjectList={subjectList}
+              setSubjectList={setSubjectList}
+              questionPaper={questionPaper}
+              setQuestionPaper={setQuestionPaper}
+              setTargetQuestionNo={setTargetQuestionNo}
+              targetQuestionNo={targetQuestionNo}
+              submitTest={submitTest}
+            />
+          ) : (
+            <p className="loading-text">Loading questions...</p>
+          )}
         </div>
       </div>
-    </>
+
+      {/* RIGHT : Status Panel */}
+      <div className="question-right">
+
+        {/* Timer */}
+        <div className="timer-box">
+          <h5>
+            Time Left
+            <span>
+              {minutes < 10 ? '0' : ''}{minutes}:
+              {seconds < 10 ? '0' : ''}{seconds}
+            </span>
+          </h5>
+        </div>
+
+        <h6 className="status-title">Question Status</h6>
+
+        <div className="status-body">
+          {subjectList.map((subject, index) => (
+            <div key={index} className="subject-block">
+              <div className="subject-name">{subject}</div>
+
+              <div className="question-numbers">
+                {questionList[0]?.[subject].map((question, index) => {
+                  const q = questionPaper?.[subject].find(
+                    obj => obj.Id == question.Id
+                  );
+
+                  let cls = "not-selected";
+                  if (q?.AnswerKey !== 'null') cls = "selected";
+                  else if (q?.MarkedForReview !== 'null') cls = "review";
+
+                  return (
+                    <span
+                      key={index}
+                      onClick={() => navigateToQuestion(subject, index)}
+                      className={`q-circle ${cls}`}
+                    >
+                      {index + 1}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  </div>
+);
+
 }

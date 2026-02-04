@@ -7,12 +7,12 @@
     padding:10px;
     border:1px solid rgb(225, 223, 223);
     border-radius: 5px;
-    color:#EA3F3F; 
+    color:#6A0DAD; 
     background-color: white;
 }
 .active{
     /* border-bottom: 2px solid #EA3F3F !important; */
-    background-color: #EA3F3F !important;
+    background-color: #5A0B91 !important;
     color:white !important;
     border: 2px solid white !important;
 }
@@ -28,6 +28,32 @@
 }
 .question-footer{
     height: 70px;
+}
+/* ===============================
+   END TEST BUTTON – THEME HOVER
+================================ */
+#submit-button {
+  background: #ffffff;
+  color: #6A0DAD;
+  border: 2px solid #6A0DAD;
+  font-weight: 600;
+  border-radius: 10px;
+  transition: all 0.35s ease;
+}
+
+/* Gradient hover effect */
+#submit-button:hover {
+  background: linear-gradient(90deg, #6A0DAD, #8E2DE2, #C471ED);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 8px 25px rgba(142, 45, 226, 0.35);
+  transform: translateY(-1px);
+}
+
+/* Optional: Active click feedback */
+#submit-button:active {
+  transform: scale(0.98);
+  box-shadow: 0 4px 12px rgba(142, 45, 226, 0.3);
 }
 
 

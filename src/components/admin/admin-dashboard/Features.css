@@ -1,0 +1,55 @@
+.admin-container {
+  padding: 30px 0;
+}
+
+.admin-title {
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 30px;
+  color: #4a0d66;
+}
+
+.admin-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, #7b2ff7, #f107a3);
+  text-align: center;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.theme-btn {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+  background: linear-gradient(135deg, #7b2ff7, #f107a3);
+  transition: 0.3s;
+}
+
+.theme-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(241,7,163,0.5);
+}
+
+.spinner-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}

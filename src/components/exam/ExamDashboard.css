@@ -1,4 +1,4 @@
-.bg-container{
+/* .bg-container{
     background-color: #EA3F3F;
     width: 100%;
     min-height: 700px;
@@ -22,4 +22,125 @@
 .block-footer{
     height: 10%;
     width: 100%;
+} */
+
+/* Background */
+.exam-wrapper {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #1d2671, #c33764);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+/* Main card */
+.exam-card {
+    width: 100%;
+    max-width: 900px;
+    height: 85vh;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+    overflow: hidden;
+}
+
+/* Header */
+.exam-header {
+    padding: 25px;
+    text-align: center;
+    background: linear-gradient(135deg, #1d2671, #c33764);
+    color: white;
+}
+
+.exam-header h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.exam-header p {
+    margin-top: 5px;
+    opacity: 0.9;
+}
+
+/* Body */
+.exam-body {
+    flex: 1;
+    padding: 25px 35px;
+    overflow-y: auto;
+}
+
+.welcome-text {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.instruction-list {
+    padding-left: 20px;
+}
+
+.instruction-list li {
+    margin-bottom: 14px;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Footer */
+.exam-footer {
+    padding: 20px 30px;
+    border-top: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Checkbox */
+.confirm-box {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+}
+
+.confirm-box input {
+    transform: scale(1.2);
+}
+
+/* Button */
+.start-btn {
+    padding: 12px 40px;
+    border-radius: 30px;
+    border: none;
+    font-size: 16px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #1d2671, #c33764);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.start-btn:disabled {
+    background: #aaa;
+    cursor: not-allowed;
+}
+
+.start-btn:not(:disabled):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .exam-card {
+        height: auto;
+        max-height: 95vh;
+    }
+
+    .exam-body {
+        padding: 20px;
+    }
 }
