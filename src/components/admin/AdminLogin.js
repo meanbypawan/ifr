@@ -4,18 +4,26 @@ import Api from "../../api/Api";
 import { ToastContainer, toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import "./AdminLogin.css";
+import { useDispatch } from "react-redux";
+import { saveUser } from "../redux-data/UserSlice";
 
 function AdminLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleSubmit = (event) => {
     event.preventDefault();
     axios.post(Api.ADMIN_SIGN_IN, { username, password })
       .then(response => {
-        if (response.data.status)
+        console.log(response.data);
+        if (response.data.status) {
+          dispatch(
+            saveUser({})
+          );
           navigate("/system-administration/dashboard");
+        }
         else
           toast.error(response.data.message);
       })

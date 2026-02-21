@@ -37,12 +37,12 @@ function App() {
        <Route path='/question-dashboard' element={<Auth><QuestionDashBoard/></Auth>}/>
        <Route path='/result' element={<Result/>}/>
        <Route path='/system-administration/login' element={<AdminLogin/>}/>
-       <Route path='/system-administration/dashboard' element={<Dashboard/>}>
-         <Route path='create-exam' element={<CreateExam/>}/>
-         <Route path='upload-student' element={<UploadStudent/>}/>
-         <Route index element={<Features/>}/>
-         <Route path='manage-exam' element={<ManageExam/>}/>
-         <Route path='data-sheet/:code' element={<DataSheet/>}/>
+       <Route path='/system-administration/dashboard' element={<Auth><Dashboard/></Auth>}>
+         <Route path='create-exam' element={<Auth><CreateExam/></Auth>}/>
+         <Route path='upload-student' element={<Auth><UploadStudent/></Auth>}/>
+         <Route index element={<Auth><Features/></Auth>}/>
+         <Route path='manage-exam' element={<Auth><ManageExam/></Auth>}/>
+         <Route path='data-sheet/:code' element={<Auth><DataSheet/></Auth>}/>
        </Route>
     </Routes>
    </div>
