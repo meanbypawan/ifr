@@ -7,102 +7,103 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import Api from "../../../api/Api";
-export default function QuestionDashBoard(){
+export default function QuestionDashBoard() {
   const navigate = useNavigate();
 
-  const {userId} = useSelector((store)=>store.user);
-  const [questionList,setQuestionList] = useState([]);
-  
-  const[activeQuestionList,setActiveQuestionList] = useState("English");
-  
-  const [subjectList,setSubjectList] = useState(["English","Hindi","General Knowledge","Computer Basic","Quantitative Aptitude","Logical Resoning"]);
-  
-  const [questionPaper,setQuestionPaper] = useState(JSON.parse(localStorage.getItem("question-list")));
+  const { userId } = useSelector((store) => store.user);
+  const [questionList, setQuestionList] = useState([]);
 
-  const [targetQuestionNo,setTargetQuestionNo] = useState(null);
-  const changeTab = (scrollContainerId,subject)=>{
+  const [activeQuestionList, setActiveQuestionList] = useState("English");
+
+  const [subjectList, setSubjectList] = useState(["English", "Hindi", "General Knowledge", "Computer Basic", "Quantitative Aptitude", "Logical Resoning"]);
+
+  const [questionPaper, setQuestionPaper] = useState(JSON.parse(localStorage.getItem("question-list")));
+
+  const [targetQuestionNo, setTargetQuestionNo] = useState(null);
+  const changeTab = (scrollContainerId, subject) => {
     setActiveQuestionList(subject);
-    let scrollContainer = document.querySelector("#"+scrollContainerId);    
+    let scrollContainer = document.querySelector("#" + scrollContainerId);
     scrollContainer.scrollTop = 0;
   }
   const styles = {
-    selected:{
+    selected: {
       backgroundColor: "#6A0DAD",
-      color:"white",
-      width:"20px",
-      height:"20px",
-      borderRadius:"50%",
-      fontSize:"10px",
+      color: "white",
+      width: "20px",
+      height: "20px",
+      borderRadius: "50%",
+      fontSize: "10px",
       cursor: "pointer"
     },
-    notSelected:{
+    notSelected: {
       backgroundColor: "#E1DFDF",
       color: "black",
-      width:"20px",
-      height:"20px",
-      borderRadius:"50%",
-      fontSize:"10px",
+      width: "20px",
+      height: "20px",
+      borderRadius: "50%",
+      fontSize: "10px",
       cursor: "pointer"
     },
-    markedForReview:{
+    markedForReview: {
       backgroundColor: "orange",
       color: "black",
-      width:"20px",
-      height:"20px",
-      borderRadius:"50%",
-      fontSize:"10px",
+      width: "20px",
+      height: "20px",
+      borderRadius: "50%",
+      fontSize: "10px",
       cursor: "pointer"
     }
   };
-  const [time, setTime] = useState(90*60);
-  useEffect(()=>{
+  const [time, setTime] = useState(90 * 60);
+  useEffect(() => {
     loadQuestionsPaper();
-  },[]);
-  const loadQuestionsPaper = async ()=>{
-   try{ 
-    const response = await axios.post(Api.GENERATE_PAPER,{userId});
-    console.log(response.data.questionsList);
-    setQuestionList([...response.data.questionsList]);
-    saveQuestion(response.data.questionsList);
-    let timer = localStorage.getItem("timer");
-    if(timer)
-     setTime(timer*1);
-   }
-   catch(err){
-    toast.error("Oops! something went wrong..");
-   } 
-  } 
-
-  const saveQuestion = (questionList)=>{
-    let previousUserId = localStorage.getItem("userId");
-    if(!previousUserId || previousUserId != userId){
-      let updateQuestionList = {"English":[],"Hindi":[],"General Knowledge":[],"Computer Basic":[],"Quantitative Aptitude":[],"Logical Resoning":[]};
-       for(let key in questionList[0])
-          for(let question of questionList[0][key]){
-            delete question.Answer;
-            updateQuestionList[key].push(question);
-        }
-       localStorage.setItem("question-list",JSON.stringify(updateQuestionList));
-       localStorage.setItem("userId",userId+"");
-       setQuestionPaper(updateQuestionList);
+  }, []);
+  const loadQuestionsPaper = async () => {
+    try {
+      const response = await axios.post(Api.GENERATE_PAPER, { userId });
+      console.log(response.data.questionsList);
+      setQuestionList([...response.data.questionsList]);
+      saveQuestion(response.data.questionsList);
+      let timer = localStorage.getItem("timer");
+      if (timer)
+        setTime(timer * 1);
     }
-  
-  }  
-    
+    catch (err) {
+      toast.error("Oops! something went wrong..");
+    }
+  }
+
+  const saveQuestion = (questionList) => {
+    let previousUserId = localStorage.getItem("userId");
+    if (!previousUserId || previousUserId != userId) {
+      let updateQuestionList = { "English": [], "Hindi": [], "General Knowledge": [], "Computer Basic": [], "Quantitative Aptitude": [], "Logical Resoning": [] };
+      for (let key in questionList[0])
+        for (let question of questionList[0][key]) {
+          delete question.Answer;
+          updateQuestionList[key].push(question);
+        }
+      localStorage.setItem("question-list", JSON.stringify(updateQuestionList));
+      localStorage.setItem("userId", userId + "");
+      setQuestionPaper(updateQuestionList);
+    }
+
+  }
+
   useEffect(() => {
     const timer = setInterval(() => {
       if (time > 0) {
         setTime(time - 1);
-        localStorage.setItem("timer",""+(time-1));
+        localStorage.setItem("timer", "" + (time - 1));
       } else {
         clearInterval(timer);
+        submitTest();
       }
-    }, 1000); 
+    }, 1000);
     return () => {
-      clearInterval(timer); 
+      clearInterval(timer);
     };
   }, [time]);
-  const navigateToQuestion = (subject,index)=>{
+  const navigateToQuestion = (subject, index) => {
     //window.alert(subject+"  "+index);
     setActiveQuestionList(subject);
     setTargetQuestionNo(index);
@@ -110,100 +111,137 @@ export default function QuestionDashBoard(){
   }
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;
-  const submitTest = async ()=>{
-    try{
-     let questionList = localStorage.getItem("question-list");      
-     questionList = questionList && JSON.parse(questionList);
-     let response = await axios.post(Api.SUBMIT_EXAM,{questionList,userId});
-     localStorage.clear();
-     navigate("/result",{state:{param:{score : response.data.score}}});
+  const submitTest = async () => {
+    try {
+      let questionList = localStorage.getItem("question-list");
+      questionList = questionList && JSON.parse(questionList);
+      let response = await axios.post(Api.SUBMIT_EXAM, { questionList, userId });
+      localStorage.clear();
+      navigate("/result", { state: { param: { score: response.data.score } } });
     }
-    catch(err){
+    catch (err) {
       console.log(err);
       toast.error("Oops ! Something went wrong..");
-    }  
+    }
   }
+  // ================= FULLSCREEN PROTECTION =================
+  useEffect(() => {
+    let intentionalExit = false;
+
+    const startFullscreen = async () => {
+      try {
+        if (!document.fullscreenElement) {
+          await document.documentElement.requestFullscreen();
+        }
+      } catch (err) {
+        console.log("Fullscreen blocked");
+      }
+    };
+
+    const handleFullscreenChange = () => {
+      // If fullscreen exited while exam still running
+      if (!document.fullscreenElement && time > 0) {
+
+        // Small delay to avoid accidental browser glitches
+        setTimeout(() => {
+          if (!document.fullscreenElement && time > 0) {
+            intentionalExit = true;
+            alert("You exited fullscreen. Exam will be submitted.");
+            submitTest();
+          }
+        }, 2000);
+      }
+    };
+
+    startFullscreen();
+
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+
+    return () => {
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    };
+  }, [time]);
   return (
-  <div className="question-dashboard-wrapper">
+    <div className="question-dashboard-wrapper">
 
-    <div className="question-dashboard-card">
+      <div className="question-dashboard-card">
 
-      {/* LEFT : Question Area */}
-      <div className="question-left">
-        <Header />
+        {/* LEFT : Question Area */}
+        <div className="question-left">
+          <Header />
 
-        <div className="question-content">
-          {questionList.length !== 0 && questionPaper != null ? (
-            <QuestionTab
-              changeTab={changeTab}
-              userId={userId}
-              questionList={questionList}
-              setQuestionList={setQuestionList}
-              activeQuestionList={activeQuestionList}
-              setActiveQuestionList={setActiveQuestionList}
-              subjectList={subjectList}
-              setSubjectList={setSubjectList}
-              questionPaper={questionPaper}
-              setQuestionPaper={setQuestionPaper}
-              setTargetQuestionNo={setTargetQuestionNo}
-              targetQuestionNo={targetQuestionNo}
-              submitTest={submitTest}
-            />
-          ) : (
-            <p className="loading-text">Loading questions...</p>
-          )}
-        </div>
-      </div>
-
-      {/* RIGHT : Status Panel */}
-      <div className="question-right">
-
-        {/* Timer */}
-        <div className="timer-box">
-          <h5>
-            Time Left
-            <span>
-              {minutes < 10 ? '0' : ''}{minutes}:
-              {seconds < 10 ? '0' : ''}{seconds}
-            </span>
-          </h5>
+          <div className="question-content">
+            {questionList.length !== 0 && questionPaper != null ? (
+              <QuestionTab
+                changeTab={changeTab}
+                userId={userId}
+                questionList={questionList}
+                setQuestionList={setQuestionList}
+                activeQuestionList={activeQuestionList}
+                setActiveQuestionList={setActiveQuestionList}
+                subjectList={subjectList}
+                setSubjectList={setSubjectList}
+                questionPaper={questionPaper}
+                setQuestionPaper={setQuestionPaper}
+                setTargetQuestionNo={setTargetQuestionNo}
+                targetQuestionNo={targetQuestionNo}
+                submitTest={submitTest}
+              />
+            ) : (
+              <p className="loading-text">Loading questions...</p>
+            )}
+          </div>
         </div>
 
-        <h6 className="status-title">Question Status</h6>
+        {/* RIGHT : Status Panel */}
+        <div className="question-right">
 
-        <div className="status-body">
-          {subjectList.map((subject, index) => (
-            <div key={index} className="subject-block">
-              <div className="subject-name">{subject}</div>
+          {/* Timer */}
+          <div className="timer-box">
+            <h5>
+              Time Left
+              <span>
+                {minutes < 10 ? '0' : ''}{minutes}:
+                {seconds < 10 ? '0' : ''}{seconds}
+              </span>
+            </h5>
+          </div>
 
-              <div className="question-numbers">
-                {questionList[0]?.[subject].map((question, index) => {
-                  const q = questionPaper?.[subject].find(
-                    obj => obj.Id == question.Id
-                  );
+          <h6 className="status-title">Question Status</h6>
 
-                  let cls = "not-selected";
-                  if (q?.AnswerKey !== 'null') cls = "selected";
-                  else if (q?.MarkedForReview !== 'null') cls = "review";
+          <div className="status-body">
+            {subjectList.map((subject, index) => (
+              <div key={index} className="subject-block">
+                <div className="subject-name">{subject}</div>
 
-                  return (
-                    <span
-                      key={index}
-                      onClick={() => navigateToQuestion(subject, index)}
-                      className={`q-circle ${cls}`}
-                    >
-                      {index + 1}
-                    </span>
-                  );
-                })}
+                <div className="question-numbers">
+                  {questionList[0]?.[subject].map((question, index) => {
+                    const q = questionPaper?.[subject].find(
+                      obj => obj.Id == question.Id
+                    );
+
+                    let cls = "not-selected";
+                    if (q?.AnswerKey !== 'null') cls = "selected";
+                    else if (q?.MarkedForReview !== 'null') cls = "review";
+
+                    return (
+                      <span
+                        key={index}
+                        onClick={() => navigateToQuestion(subject, index)}
+                        className={`q-circle ${cls}`}
+                      >
+                        {index + 1}
+                      </span>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
 
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
 
 }
