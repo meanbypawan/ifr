@@ -2,7 +2,7 @@ import { useSelector } from "react-redux";
 import Header from "../question-dashboard-header/Header";
 import QuestionTab from "../question-tab/QuestionTab";
 import "./QuestionDashboard.css";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -103,6 +103,7 @@ export default function QuestionDashBoard() {
       clearInterval(timer);
     };
   }, [time]);
+
   const navigateToQuestion = (subject, index) => {
     //window.alert(subject+"  "+index);
     setActiveQuestionList(subject);
@@ -124,43 +125,118 @@ export default function QuestionDashBoard() {
       toast.error("Oops ! Something went wrong..");
     }
   }
-  // ================= FULLSCREEN PROTECTION =================
-  useEffect(() => {
-    let intentionalExit = false;
+  //--------------------------
+  const submittedRef = useRef(false);
+const violationCountRef = useRef(0);
+const violationLockRef = useRef(false);
+// ================= PRODUCTION EXAM SECURITY =================
+useEffect(() => {
 
-    const startFullscreen = async () => {
-      try {
-        if (!document.fullscreenElement) {
-          await document.documentElement.requestFullscreen();
-        }
-      } catch (err) {
-        console.log("Fullscreen blocked");
+  const MAX_VIOLATIONS = 3;
+
+  const handleViolation = () => {
+
+    if (submittedRef.current || time <= 0) return;
+
+    // Prevent multiple triggers within 2 seconds
+    if (violationLockRef.current) return;
+
+    violationLockRef.current = true;
+
+    setTimeout(() => {
+      violationLockRef.current = false;
+    }, 2000);
+
+    violationCountRef.current += 1;
+
+    if (violationCountRef.current < MAX_VIOLATIONS) {
+
+      toast.warning(
+        `Warning ${violationCountRef.current}/${MAX_VIOLATIONS}.
+Do not leave exam screen.
+After ${MAX_VIOLATIONS} violations, exam will be submitted.`,
+        { autoClose: 4000 }
+      );
+
+    } else {
+
+      submittedRef.current = true;
+
+      toast.error("3 violations detected. Submitting exam...", {
+        autoClose: 2000
+      });
+
+      setTimeout(() => {
+        submitTest();
+      }, 2000);
+    }
+  };
+
+  // Detect tab switch / minimize
+  const handleVisibilityChange = () => {
+    if (document.hidden) {
+      handleViolation();
+    }
+  };
+
+  // Detect window focus loss
+  const handleWindowBlur = () => {
+    handleViolation();
+  };
+
+  // Detect fullscreen exit
+  const handleFullscreenChange = () => {
+    if (!document.fullscreenElement) {
+      handleViolation();
+    }
+  };
+
+  // Disable right click
+  const disableRightClick = (e) => {
+    e.preventDefault();
+  };
+
+  // Disable devtools shortcuts
+  const disableShortcuts = (e) => {
+    if (
+      e.key === "F12" ||
+      (e.ctrlKey && e.shiftKey && e.key === "I") ||
+      (e.ctrlKey && e.shiftKey && e.key === "J") ||
+      (e.ctrlKey && e.key === "U")
+    ) {
+      e.preventDefault();
+      handleViolation();
+    }
+  };
+
+  // Start fullscreen automatically
+  const startFullscreen = async () => {
+    try {
+      if (!document.fullscreenElement) {
+        await document.documentElement.requestFullscreen();
       }
-    };
+    } catch (err) {
+      console.log("Fullscreen blocked by browser");
+    }
+  };
 
-    const handleFullscreenChange = () => {
-      // If fullscreen exited while exam still running
-      if (!document.fullscreenElement && time > 0) {
+  startFullscreen();
 
-        // Small delay to avoid accidental browser glitches
-        setTimeout(() => {
-          if (!document.fullscreenElement && time > 0) {
-            intentionalExit = true;
-            alert("You exited fullscreen. Exam will be submitted.");
-            submitTest();
-          }
-        }, 2000);
-      }
-    };
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+  window.addEventListener("blur", handleWindowBlur);
+  document.addEventListener("fullscreenchange", handleFullscreenChange);
+  document.addEventListener("contextmenu", disableRightClick);
+  document.addEventListener("keydown", disableShortcuts);
 
-    startFullscreen();
+  return () => {
+    document.removeEventListener("visibilitychange", handleVisibilityChange);
+    window.removeEventListener("blur", handleWindowBlur);
+    document.removeEventListener("fullscreenchange", handleFullscreenChange);
+    document.removeEventListener("contextmenu", disableRightClick);
+    document.removeEventListener("keydown", disableShortcuts);
+  };
 
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
-
-    return () => {
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
-    };
-  }, [time]);
+}, [time]);
   return (
     <div className="question-dashboard-wrapper">
 
