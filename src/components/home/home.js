@@ -2,7 +2,7 @@ import { useState } from 'react';
 import './home1.css';
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { saveUser } from '../redux-data/UserSlice';
 import Api from '../../api/Api';
@@ -66,6 +66,7 @@ export default function Home() {
 
                             <button type="submit">Get Started</button>
                         </form>
+                        <Link to="/system-administration/login">Admin ?</Link>
                     </div>
 
                 </div>
