@@ -54,7 +54,7 @@ export default function QuestionDashBoard() {
       cursor: "pointer"
     }
   };
-  const [time, setTime] = useState(90 * 60);
+  const [time, setTime] = useState(30 * 60);
   useEffect(() => {
     loadQuestionsPaper();
   }, []);
