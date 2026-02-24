@@ -7,6 +7,7 @@ import "./ManageExam.css";
 
 function ManageExam() {
   const [examList, setExamList] = useState([]);
+  const [examPassword,setExamPassword] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -23,7 +24,10 @@ function ManageExam() {
 
   const generateExamPassword = (code) => {
     axios.post(Api.GENERATE_PASSWORD, { code })
-      .then(res => toast.success(res.data.message))
+      .then(res => {toast.success(res.data.message);
+        //setExamPassword(res.data.password);
+        window.alert(res.data.password);
+      })
       .catch(() => toast.error("Oops! something went wrong"));
   };
 
@@ -80,7 +84,6 @@ function ManageExam() {
                     >
                       Generate Password
                     </button>
-
                     <button
                       onClick={() =>
                         navigate(`/system-administration/dashboard/data-sheet/${exam.code}`)

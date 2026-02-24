@@ -95,8 +95,8 @@ export default function QuestionDashBoard() {
         setTime(time - 1);
         localStorage.setItem("timer", "" + (time - 1));
       } else {
-        clearInterval(timer);
         submitTest();
+        clearInterval(timer);
       }
     }, 1000);
     return () => {
@@ -112,6 +112,17 @@ export default function QuestionDashBoard() {
   }
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;
+  const endTest = () => {
+  confirmLockRef.current = true;   // 🔒 Lock violation detection
+
+  const confirmSubmit = window.confirm("Are you sure you want to submit?");
+
+  confirmLockRef.current = false;  // 🔓 Unlock after dialog closes
+
+  if (confirmSubmit) {
+    submitTest();
+  }
+};
   const submitTest = async () => {
     try {
       let questionList = localStorage.getItem("question-list");
@@ -127,116 +138,117 @@ export default function QuestionDashBoard() {
   }
   //--------------------------
   const submittedRef = useRef(false);
-const violationCountRef = useRef(0);
-const violationLockRef = useRef(false);
-// ================= PRODUCTION EXAM SECURITY =================
-useEffect(() => {
+  const violationCountRef = useRef(0);
+  const violationLockRef = useRef(false);
+  const confirmLockRef = useRef(false);
+  // ================= PRODUCTION EXAM SECURITY =================
+  useEffect(() => {
 
-  const MAX_VIOLATIONS = 3;
+    const MAX_VIOLATIONS = 3;
 
-  const handleViolation = () => {
+    const handleViolation = () => {
 
-    if (submittedRef.current || time <= 0) return;
+      if (submittedRef.current || time <= 0) return;
 
-    // Prevent multiple triggers within 2 seconds
-    if (violationLockRef.current) return;
+      // Prevent multiple triggers within 2 seconds
+      if (violationLockRef.current) return;
 
-    violationLockRef.current = true;
-
-    setTimeout(() => {
-      violationLockRef.current = false;
-    }, 2000);
-
-    violationCountRef.current += 1;
-
-    if (violationCountRef.current < MAX_VIOLATIONS) {
-
-      toast.warning(
-        `Warning ${violationCountRef.current}/${MAX_VIOLATIONS}.
-Do not leave exam screen.
-After ${MAX_VIOLATIONS} violations, exam will be submitted.`,
-        { autoClose: 4000 }
-      );
-
-    } else {
-
-      submittedRef.current = true;
-
-      toast.error("3 violations detected. Submitting exam...", {
-        autoClose: 2000
-      });
+      violationLockRef.current = true;
 
       setTimeout(() => {
-        submitTest();
+        violationLockRef.current = false;
       }, 2000);
-    }
-  };
 
-  // Detect tab switch / minimize
-  const handleVisibilityChange = () => {
-    if (document.hidden) {
-      handleViolation();
-    }
-  };
+      violationCountRef.current += 1;
 
-  // Detect window focus loss
-  const handleWindowBlur = () => {
-    handleViolation();
-  };
+      if (violationCountRef.current < MAX_VIOLATIONS) {
 
-  // Detect fullscreen exit
-  const handleFullscreenChange = () => {
-    if (!document.fullscreenElement) {
-      handleViolation();
-    }
-  };
+        toast.warning(
+          `Warning ${violationCountRef.current}/${MAX_VIOLATIONS}.
+Do not leave exam screen.
+After ${MAX_VIOLATIONS} violations, exam will be submitted.`,
+          { autoClose: 4000 }
+        );
 
-  // Disable right click
-  const disableRightClick = (e) => {
-    e.preventDefault();
-  };
+      } else {
 
-  // Disable devtools shortcuts
-  const disableShortcuts = (e) => {
-    if (
-      e.key === "F12" ||
-      (e.ctrlKey && e.shiftKey && e.key === "I") ||
-      (e.ctrlKey && e.shiftKey && e.key === "J") ||
-      (e.ctrlKey && e.key === "U")
-    ) {
-      e.preventDefault();
-      handleViolation();
-    }
-  };
+        submittedRef.current = true;
 
-  // Start fullscreen automatically
-  const startFullscreen = async () => {
-    try {
-      if (!document.fullscreenElement) {
-        await document.documentElement.requestFullscreen();
+        toast.error("3 violations detected. Submitting exam...", {
+          autoClose: 2000
+        });
+
+        setTimeout(() => {
+          submitTest();
+        }, 2000);
       }
-    } catch (err) {
-      console.log("Fullscreen blocked by browser");
-    }
-  };
+    };
 
-  startFullscreen();
+    // Detect tab switch / minimize
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        handleViolation();
+      }
+    };
 
-  document.addEventListener("visibilitychange", handleVisibilityChange);
-  window.addEventListener("blur", handleWindowBlur);
-  document.addEventListener("fullscreenchange", handleFullscreenChange);
-  document.addEventListener("contextmenu", disableRightClick);
-  document.addEventListener("keydown", disableShortcuts);
+    // Detect window focus loss
+    const handleWindowBlur = () => {
+      handleViolation();
+    };
 
-  return () => {
-    document.removeEventListener("visibilitychange", handleVisibilityChange);
-    window.removeEventListener("blur", handleWindowBlur);
-    document.removeEventListener("fullscreenchange", handleFullscreenChange);
-    document.removeEventListener("contextmenu", disableRightClick);
-    document.removeEventListener("keydown", disableShortcuts);
-  };
+    // Detect fullscreen exit
+    const handleFullscreenChange = () => {
+      if (!document.fullscreenElement) {
+        handleViolation();
+      }
+    };
 
-}, [time]);
+    // Disable right click
+    const disableRightClick = (e) => {
+      e.preventDefault();
+    };
+
+    // Disable devtools shortcuts
+    const disableShortcuts = (e) => {
+      if (
+        e.key === "F12" ||
+        (e.ctrlKey && e.shiftKey && e.key === "I") ||
+        (e.ctrlKey && e.shiftKey && e.key === "J") ||
+        (e.ctrlKey && e.key === "U")
+      ) {
+        e.preventDefault();
+        handleViolation();
+      }
+    };
+
+    // Start fullscreen automatically
+    const startFullscreen = async () => {
+      try {
+        if (!document.fullscreenElement) {
+          await document.documentElement.requestFullscreen();
+        }
+      } catch (err) {
+        console.log("Fullscreen blocked by browser");
+      }
+    };
+
+    startFullscreen();
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("blur", handleWindowBlur);
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("contextmenu", disableRightClick);
+    document.addEventListener("keydown", disableShortcuts);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("blur", handleWindowBlur);
+      document.removeEventListener("fullscreenchange", handleFullscreenChange);
+      document.removeEventListener("contextmenu", disableRightClick);
+      document.removeEventListener("keydown", disableShortcuts);
+    };
+
+  }, [time]);
   return (
     <div className="question-dashboard-wrapper">
 
@@ -262,6 +274,7 @@ After ${MAX_VIOLATIONS} violations, exam will be submitted.`,
                 setTargetQuestionNo={setTargetQuestionNo}
                 targetQuestionNo={targetQuestionNo}
                 submitTest={submitTest}
+                endTest={endTest}
               />
             ) : (
               <p className="loading-text">Loading questions...</p>
