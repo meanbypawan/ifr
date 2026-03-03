@@ -304,7 +304,7 @@ After ${MAX_VIOLATIONS} violations, exam will be submitted.`,
                 <div className="subject-name">{subject}</div>
 
                 <div className="question-numbers">
-                  {questionList[0]?.[subject].map((question, index) => {
+                  {questionList[0]?.[subject]?.map((question, index) => {
                     const q = questionPaper?.[subject].find(
                       obj => obj.Id == question.Id
                     );
