@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Api from "../../../api/Api";
@@ -12,6 +12,7 @@ function DataSheet() {
     const [filter, setFilter] = useState("All");
     const [isLoading, setIsLoading] = useState(false);
     const [label, setLabel] = useState("All record");
+    const collegeNameRef = useRef("");
     useEffect(() => {
         loadDataSheet();
     }, []);
@@ -53,6 +54,12 @@ function DataSheet() {
             setFilterList(failedStudent);
             setLabel("Failed student")
         }
+        else if(filterName == "college"){
+            let collegeName = collegeNameRef.current.value;
+            let studentOfCollegeList = studentList.filter((student)=>{return student.College_Name.toLowerCase().startsWith(collegeName.toLowerCase())})
+            setFilterList(studentOfCollegeList);
+            setLabel("Student list by institute");
+        }
     }
 
     const exportToExcel = () => {
@@ -80,6 +87,12 @@ function DataSheet() {
 
             <p className="filter-label">{label}</p>
 
+             <div class="input-group mb-3">
+                    <input onChange={()=>filterData("college")} ref={collegeNameRef} type="text" class="form-control" placeholder="Search by institute" />
+                    <div class="input-group-append">
+                        <span class="input-group-text" onClick={()=>filterData("college")}>Go</span>
+                    </div>
+            </div>
             <div className="filter-group mt-2">
                 <button onClick={() => filterData("All")} className="filter-btn gray">
                     All ({studentList.length})
@@ -110,6 +123,7 @@ function DataSheet() {
                             <th>#</th>
                             <th>Name</th>
                             <th>Email</th>
+                            <th>Institute</th>
                             <th>Mobile</th>
                             <th>Qualification</th>
                             <th>Score</th>
@@ -122,6 +136,7 @@ function DataSheet() {
                                 <td>{index + 1}</td>
                                 <td>{student.Name}</td>
                                 <td>{student.Email_Id}</td>
+                                <td>{student.College_Name}</td>
                                 <td>{student.Mobile_No}</td>
                                 <td>{student.Qualification}</td>
                                 <td>
