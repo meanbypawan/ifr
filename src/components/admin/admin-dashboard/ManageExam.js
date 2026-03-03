@@ -7,7 +7,6 @@ import "./ManageExam.css";
 
 function ManageExam() {
   const [examList, setExamList] = useState([]);
-  const [examPassword,setExamPassword] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -25,21 +24,12 @@ function ManageExam() {
   const generateExamPassword = (code) => {
     axios.post(Api.GENERATE_PASSWORD, { code })
       .then(res => {toast.success(res.data.message);
-        //setExamPassword(res.data.password);
         window.alert(res.data.password);
       })
       .catch(() => toast.error("Oops! something went wrong"));
   };
 
-  const changeStatus = (code, status) => {
-    const newStatus = status === "Open" ? "Close" : "Open";
-    axios.post(Api.CHANGE_EXAM_STATUS, { code, status: newStatus })
-      .then(res => {
-        toast.success(res.data.message);
-        loadExams();
-      })
-      .catch(() => toast.error("Oops! something went wrong"));
-  };
+  
 
   return (
     <>
@@ -53,7 +43,6 @@ function ManageExam() {
               <tr>
                 <th>#</th>
                 <th>Exam Code</th>
-                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -63,21 +52,8 @@ function ManageExam() {
                 <tr key={exam._id}>
                   <td>{index + 1}</td>
                   <td className="fw-bold">{exam.code}</td>
-
-                  <td>
-                    <span className={`status-badge ${exam.status === "Open" ? "open" : "close"}`}>
-                      {exam.status}
-                    </span>
-                  </td>
-
                   <td className="action-buttons">
-                    <button
-                      onClick={() => changeStatus(exam.code, exam.status)}
-                      className="btn btn-sm btn-warning"
-                    >
-                      {exam.status === "Open" ? "Terminate" : "Activate"}
-                    </button>
-
+                  
                     <button
                       onClick={() => generateExamPassword(exam.code)}
                       className="btn btn-sm btn-secondary"

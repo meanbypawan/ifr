@@ -15,7 +15,7 @@ export default function QuestionDashBoard() {
 
   const [activeQuestionList, setActiveQuestionList] = useState("English");
 
-  const [subjectList, setSubjectList] = useState(["English", "Hindi", "General Knowledge", "Computer Basic", "Quantitative Aptitude", "Logical Resoning"]);
+  const [subjectList, setSubjectList] = useState(["English", "Computer Basic", "Quantitative Aptitude", "Logical Resoning"]);
 
   const [questionPaper, setQuestionPaper] = useState(JSON.parse(localStorage.getItem("question-list")));
 
@@ -54,7 +54,7 @@ export default function QuestionDashBoard() {
       cursor: "pointer"
     }
   };
-  const [time, setTime] = useState(30 * 60);
+  const [time, setTime] = useState(90 * 60);
   useEffect(() => {
     loadQuestionsPaper();
   }, []);
@@ -76,7 +76,7 @@ export default function QuestionDashBoard() {
   const saveQuestion = (questionList) => {
     let previousUserId = localStorage.getItem("userId");
     if (!previousUserId || previousUserId != userId) {
-      let updateQuestionList = { "English": [], "Hindi": [], "General Knowledge": [], "Computer Basic": [], "Quantitative Aptitude": [], "Logical Resoning": [] };
+      let updateQuestionList = { "English": [], "Computer Basic": [], "Quantitative Aptitude": [], "Logical Resoning": [] };
       for (let key in questionList[0])
         for (let question of questionList[0][key]) {
           delete question.Answer;
@@ -113,16 +113,16 @@ export default function QuestionDashBoard() {
   const minutes = Math.floor(time / 60);
   const seconds = time % 60;
   const endTest = () => {
-  confirmLockRef.current = true;   // 🔒 Lock violation detection
+    confirmLockRef.current = true;   // 🔒 Lock violation detection
 
-  const confirmSubmit = window.confirm("Are you sure you want to submit?");
+    const confirmSubmit = window.confirm("Are you sure you want to submit?");
 
-  confirmLockRef.current = false;  // 🔓 Unlock after dialog closes
+    confirmLockRef.current = false;  // 🔓 Unlock after dialog closes
 
-  if (confirmSubmit) {
-    submitTest();
-  }
-};
+    if (confirmSubmit) {
+      submitTest();
+    }
+  };
   const submitTest = async () => {
     try {
       let questionList = localStorage.getItem("question-list");

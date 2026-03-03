@@ -67,12 +67,10 @@ function QuestionTab({endTest, submitTest,changeTab,questionPaper,setQuestionPap
       <div className="container-fluid">
         <div className="row">
            <div className="col-md-12 tabs d-flex justify-content-between">
-              <button onClick={()=>changeTab('question-section',"English")} className={(activeQuestionList == "English") ? "active":""}>English</button>
-              <button onClick={()=>changeTab('question-section',"Hindi")} className={(activeQuestionList == "Hindi") ? "active":""}>Hindi</button>
-              <button onClick={()=>changeTab('question-section',"General Knowledge")} className={(activeQuestionList == "General Knowledge") ? "active":""}>G.K</button>
-              <button onClick={()=>changeTab('question-section',"Computer Basic")} className={(activeQuestionList == "Computer Basic") ? "active":""}>Computer</button>
-              <button onClick={()=>changeTab('question-section',"Quantitative Aptitude")} className={(activeQuestionList == "Quantitative Aptitude") ? "active":""}>Math</button>
-              <button onClick={()=>changeTab('question-section',"Logical Resoning")} className={(activeQuestionList == "Logical Resoning") ? "active":""}>L.R</button>
+              <button onClick={()=>changeTab('question-section',"English")} className={(activeQuestionList == "English") ? "active":""} style={{width:"22%"}}>English</button>
+              <button onClick={()=>changeTab('question-section',"Computer Basic")} className={(activeQuestionList == "Computer Basic") ? "active":""} style={{width:"22%"}}>Computer</button>
+              <button onClick={()=>changeTab('question-section',"Quantitative Aptitude")} className={(activeQuestionList == "Quantitative Aptitude") ? "active":""} style={{width:"22%"}}>Math</button>
+              <button onClick={()=>changeTab('question-section',"Logical Resoning")} className={(activeQuestionList == "Logical Resoning") ? "active":""} style={{width:"22%"}}>L.R</button>
            </div>
         </div>
         <div className="row">
